@@ -3,11 +3,15 @@ title: "Cashir App"
 author: "bllfoad"
 ---
 
-![Cashir App Logo](https://upload.wikimedia.org/wikipedia/commons/5/5e/Vercel_logo_black.svg)
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg" alt="Next js" width="150" height="150" />
+
 
 ## Cashir App by bllfoad
 
-![AWS](https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg) ![Coolify](https://coolify.io/coolify-transparent.svg)
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="aws" width="100" height="100" />
+<img src="https://coolify.io/coolify-transparent.svg" alt="coolify" width="100" height="100" />
+
 
 ### Backend is self-hosted on AWS Ubuntu instance with Coolify deploy management installed on it 
 [Learn more about Coolify](https://coolify.io/)
