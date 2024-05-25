@@ -3,7 +3,21 @@ title: "Cashir App"
 author: "bllfoad"
 ---
 
+![Cashir App Logo](https://upload.wikimedia.org/wikipedia/commons/5/5e/Vercel_logo_black.svg)
+
 ## Cashir App by bllfoad
+
+![AWS](https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg) ![Coolify](https://coolify.io/coolify-transparent.svg)
+
+### Backend is self-hosted on AWS Ubuntu instance with Coolify deploy management installed on it 
+[Learn more about Coolify](https://coolify.io/)
+
+![Vercel](https://upload.wikimedia.org/wikipedia/commons/5/5e/Vercel_logo_black.svg)
+
+### Frontend is hosted on Vercel
+[Visit Vercel](https://vercel.com/)
+
+---
 
 ### Technologies Used
 
@@ -29,6 +43,8 @@ author: "bllfoad"
 - PostgreSQL
 - Redis
 
+---
+
 ### Features
 
 - State Persistence on Refresh
@@ -40,21 +56,31 @@ author: "bllfoad"
 - Download Receipt
 - Dark Mode
 
+---
+
 ### Backend Instance Coolify Credentials
 
 - **Email:** bllfoad@gmail.com
 - **Password:** will be provided
+
+---
 
 ### Cashir App Backend Dashboard (Directus)
 
 - **Email:** admin@example.com
 - **Password:** will be provided
 
+---
+
 ### Frontend URL
 
-[https://cashirapp.vercel.app/](https://cashirapp.vercel.app/)
+[Visit Cashir App Frontend](https://cashirapp.vercel.app/)
+
+---
 
 ### Backend URL
-[http://casher-app.3.78.75.229.sslip.io/](http://casher-app.3.78.75.229.sslip.io/)
+[Visit Cashir App Backend](http://casher-app.3.78.75.229.sslip.io/)
+
+---
 
 ### حياك الله 🙌
