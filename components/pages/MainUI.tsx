@@ -1,18 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Table, TableBody } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Navbar } from "../layout/Navbar";
-import { MinusIcon, PlusIcon, TrashIcon } from "../ui/icons";
-import LeftBar from "../layout/leftBar";
+import { Navbar } from "@/components/layout/Navbar";
+import LeftBar from "@/components/layout/leftBar";
 import { Products } from "@/lib/types/types";
-import { calculateTotalPrice, calculatePricePerProductQuantity } from "@/lib/utils";
-import { handleAddProduct, handleUpdateQuantity, handleRemoveProduct, handleConfirm, handleDownloadReceipt } from "@/lib/functions/productHandlers";
-import { ConfirmDialog, OrderDialog } from "../layout/Dialogs";
-import { getImageSrc } from "@/lib/helpers/imageHelper";
-import Image from "next/image";
+import { calculatePricePerProductQuantity, calculateTotalPrice } from "@/lib/utils";
+import { downloadReceiptAsPDF, handleAddProduct, handleConfirm } from "@/lib/functions/productHandlers";
+import { ConfirmDialog, OrderDialog } from "@/components/layout/Dialogs";
+import ProductRow from "@/components/product/ProductRow";
 
 export function MainUi() {
   const [products, setProducts] = useState<Products[]>([]);
@@ -32,24 +28,35 @@ export function MainUi() {
 
   const renderReceipt = (): JSX.Element => {
     return (
-      <div className="p-4 parse text-black bg-white rounded-lg shadow-md">
-        <h2 className="text-xl font-bold mb-4">Order Receipt</h2>
-        <p className="mb-2"><strong>Order ID:</strong> {orderDetails?.id}</p>
-        <h3 className="text-lg font-semibold mb-2">Products:</h3>
-        <ul className="list-disc list-inside mb-2">
-          {orderDetails?.products.map((product: Products, index: number) => (
-            <li key={index}>
-              {product.name} - {product.quantity} x ${product.price} = ${calculatePricePerProductQuantity(product).toFixed(2)}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4"><strong>Total Price:</strong> ${orderDetails?.total_price.toFixed(2)}</p>
+      <div className="p-6 bg-white text-gray-800 rounded-lg shadow-lg">
+        <h2 className="text-2xl font-bold mb-4">Order Receipt</h2>
+        <div className="mb-4">
+          <p className="text-lg"><strong>Order ID:</strong> {orderDetails?.id}</p>
+          <p className="text-lg"><strong>Date:</strong> {new Date(orderDetails?.date_created).toLocaleDateString()}</p>
+        </div>
+        <div className="mb-4">
+          <h3 className="text-xl font-semibold mb-2">Products:</h3>
+          <ul className="divide-y divide-gray-200">
+            {orderDetails?.products.map((product: Products, index: number) => (
+              <li key={index} className="py-2 flex justify-between items-center">
+                <div className="flex-1">
+                  <p className="text-lg font-medium">{product.name}</p>
+                  <p className="text-sm text-gray-500">{product.quantity} x ${product.price?.toFixed(2)}</p>
+                </div>
+                <p className="text-lg font-medium">${calculatePricePerProductQuantity(product).toFixed(2)}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="border-t border-gray-200 pt-4">
+          <p className="text-lg"><strong>Total Price:</strong> ${orderDetails?.total_price.toFixed(2)}</p>
+        </div>
       </div>
     );
   };
 
   return (
-    <div className="bg-gray-100 text-white dark:bg-gray-900 min-h-screen flex flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+    <div className="bg-gray-100 dark:text-white dark:bg-gray-900 min-h-screen flex flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
       <div className="bg-white dark:bg-gray-800 w-full max-w-6xl rounded-lg shadow-md overflow-hidden">
         <Navbar />
         <div className="flex flex-col md:flex-row">
@@ -69,61 +76,14 @@ export function MainUi() {
               <Table>
                 <TableBody>
                   {products.map((product, index) => (
-                    <TableRow key={index} className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-[1fr_2fr_1fr_2fr_1fr] items-center">
-                      <TableCell className="flex justify-center md:justify-start">
-                        <Image
-                          width={64}
-                          height={64}
-                          className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-md"
-                          src={getImageSrc(product.image ?? "")}
-                          alt={product.name ?? ""}
-                        />
-                      </TableCell>
-                      <TableCell className="flex justify-center md:justify-start">
-                        <div className="flex flex-col sm:flex-row sm:items-center space-x-0 sm:space-x-4">
-                          <div className="flex gap-2 flex-wrap justify-center sm:justify-start">
-                            <div className="text-base font-medium">{product.name}</div>
-                            <div className="bg-white p-1 px-2 rounded-3xl text-sm text-gray-500 dark:text-gray-400">
-                              ${product.price}
-                            </div>
-                            <div className="bg-white p-1 px-2 rounded-3xl text-sm text-gray-500 dark:text-gray-400">
-                              Total: ${calculatePricePerProductQuantity(product).toFixed(2)}
-                            </div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="flex justify-center md:justify-start">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">{product.quantity} pc.</div>
-                      </TableCell>
-                      <TableCell className="flex justify-center md:justify-start">
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            className="px-2 py-1"
-                            variant="secondary"
-                            onClick={() => handleUpdateQuantity({ index, quantity: product.quantity - 1, products, setProducts, setErrorMessage })}
-                          >
-                            <MinusIcon className="h-4 w-4" />
-                          </Button>
-                          <Input
-                            className="w-10 text-center"
-                            value={product.quantity}
-                            onChange={(e) => handleUpdateQuantity({ index, quantity: Number(e.target.value), products, setProducts, setErrorMessage })}
-                          />
-                          <Button
-                            className="px-2 py-1"
-                            variant="secondary"
-                            onClick={() => handleUpdateQuantity({ index, quantity: product.quantity + 1, products, setProducts, setErrorMessage })}
-                          >
-                            <PlusIcon className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                      <TableCell className="flex justify-center md:justify-start">
-                        <Button variant="destructive" onClick={() => handleRemoveProduct(index, products, setProducts)}>
-                          <TrashIcon />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
+                    <ProductRow
+                      key={index}
+                      product={product}
+                      index={index}
+                      products={products}
+                      setProducts={setProducts}
+                      setErrorMessage={setErrorMessage}
+                    />
                   ))}
                 </TableBody>
               </Table>
@@ -153,7 +113,7 @@ export function MainUi() {
         onClose={() => setShowOrderDialog(false)} 
         orderDetails={orderDetails} 
         renderReceipt={renderReceipt}
-        handleDownloadReceipt={() => handleDownloadReceipt(orderDetails)}
+        handleDownloadReceipt={() => downloadReceiptAsPDF({ orderDetails })}
       />
     </div>
   );

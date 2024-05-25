@@ -4,6 +4,8 @@ import { getProductByBarcode } from "@/lib/requests/read.directus";
 import { confirmOrder } from "@/lib/requests/create.directus";
 import { updateProductQuantity } from "@/lib/requests/update.directus";
 import { calculatePricePerProductQuantity } from "../utils";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 interface HandleAddProductProps {
   barcode: string;
@@ -147,20 +149,39 @@ export const handleConfirm = async ({
   }
 };
 
-export const handleDownloadReceipt = (orderDetails: any) => {
-  if (!orderDetails) return;
+export const downloadReceiptAsPDF = ({ orderDetails }: { orderDetails: any }) => {
+  if (orderDetails) {
+    const doc = new jsPDF();
 
-  const receiptContent = `Order Receipt\n\nOrder ID: ${orderDetails.id}\n\nProducts:\n${orderDetails.products.map(
-    (product: Products) => `${product.name} - ${product.quantity} x $${calculatePricePerProductQuantity(product).toFixed(2)}`
-  ).join('\n')}\n\nTotal Price: $${orderDetails.total_price.toFixed(2)}`;
+    doc.setFontSize(25);
+    doc.text("FreshFood", 20, 10);
+    doc.setFontSize(22);
+    doc.text("Order Receipt", 20, 20);
 
-  const blob = new Blob([receiptContent], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `receipt_order_${orderDetails.id}.txt`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+    doc.setFontSize(16);
+    doc.text(`Order ID: ${orderDetails.id}`, 20, 30);
+    doc.text(`Date: ${new Date(orderDetails.date_created).toLocaleDateString()}`, 20, 40); // Add the order date
+
+    const headers = [["Product Name", "Quantity", "Unit Price", "Total"]];
+    const data = orderDetails.products.map((product: Products) => [
+      product.name,
+      product.quantity,
+      `$${product.price?.toFixed(2)}`,
+      `$${calculatePricePerProductQuantity(product).toFixed(2)}`
+    ]);
+    //typescript error not allowing to use doc.autoTable its a known issue in jspdf-autotable we can ignore it
+    // @ts-ignore
+    doc.autoTable({
+      startY: 50,
+      head: headers,
+      body: data,
+    });
+
+    doc.setFontSize(16);
+    //typescript error not allowing to use doc.autoTable its a known issue in jspdf-autotable we can ignore it
+    // @ts-ignore
+    doc.text(`Total Price: $${orderDetails.total_price.toFixed(2)}`, 20, doc.autoTable.previous.finalY + 10);
+
+    doc.save(`receipt_order_${orderDetails.id}.pdf`);
+  }
 };
