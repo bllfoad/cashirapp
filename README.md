@@ -62,6 +62,10 @@ author: "bllfoad"
 
 ---
 
+### Test The App
+
+# To test the app enter a number between 1 and 10 in the barcode field and click add product
+
 ### Backend Instance Coolify Credentials
 
 - **Email:** bllfoad@gmail.com
