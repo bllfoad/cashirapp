@@ -12,6 +12,7 @@ import { calculateTotalPrice, calculatePricePerProductQuantity } from "@/lib/uti
 import { handleAddProduct, handleUpdateQuantity, handleRemoveProduct, handleConfirm, handleDownloadReceipt } from "@/lib/functions/productHandlers";
 import { ConfirmDialog, OrderDialog } from "../layout/Dialogs";
 import { getImageSrc } from "@/lib/helpers/imageHelper";
+import Image from "next/image";
 
 export function MainUi() {
   const [products, setProducts] = useState<Products[]>([]);
@@ -70,7 +71,9 @@ export function MainUi() {
                   {products.map((product, index) => (
                     <TableRow key={index} className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-[1fr_2fr_1fr_2fr_1fr] items-center">
                       <TableCell className="flex justify-center md:justify-start">
-                        <img
+                        <Image
+                          width={64}
+                          height={64}
                           className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-md"
                           src={getImageSrc(product.image ?? "")}
                           alt={product.name ?? ""}

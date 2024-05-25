@@ -1,6 +1,8 @@
 import { toast } from "sonner";
 import { Products } from "../types/types";
-import { getProductByBarcode, confirmOrder, updateProductQuantity } from "@/lib/requests/read.directus";
+import { getProductByBarcode } from "@/lib/requests/read.directus";
+import { confirmOrder } from "@/lib/requests/create.directus";
+import { updateProductQuantity } from "@/lib/requests/update.directus";
 import { calculatePricePerProductQuantity } from "../utils";
 
 interface HandleAddProductProps {
@@ -96,6 +98,7 @@ export const handleUpdateQuantity = ({
 export const handleRemoveProduct = (index: number, products: Products[], setProducts: React.Dispatch<React.SetStateAction<Products[]>>) => {
   const updatedProducts = products.filter((_, i) => i !== index);
   setProducts(updatedProducts);
+  toast.success("Product removed successfully!");
 };
 
 interface HandleConfirmProps {
