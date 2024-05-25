@@ -19,6 +19,7 @@ author: "bllfoad"
 - AWS Storage
 - PostgreSQL
 - Redis
+
 **Admin Dashboard:**
 - AWS
 - AWS Storage
@@ -55,3 +56,5 @@ author: "bllfoad"
 
 ### Backend URL
 [http://casher-app.3.78.75.229.sslip.io/](http://casher-app.3.78.75.229.sslip.io/)
+
+### حياك الله 🙌
