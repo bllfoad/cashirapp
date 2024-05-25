@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Assuming you are using Tailwind CSS */
+
 @keyframes fade {
   from {
     opacity: 0;

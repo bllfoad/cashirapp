@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Navbar } from "@/components/layout/Navbar";
@@ -9,6 +9,8 @@ import { calculatePricePerProductQuantity, calculateTotalPrice } from "@/lib/uti
 import { downloadReceiptAsPDF, handleAddProduct, handleConfirm } from "@/lib/functions/productHandlers";
 import { ConfirmDialog, OrderDialog } from "@/components/layout/Dialogs";
 import ProductRow from "@/components/product/ProductRow";
+
+const LOCAL_STORAGE_KEY = "mainUiState";
 
 export function MainUi() {
   const [products, setProducts] = useState<Products[]>([]);
@@ -21,6 +23,60 @@ export function MainUi() {
   const [showConfirmDialog, setShowConfirmDialog] = useState<boolean>(false);
   const [showOrderDialog, setShowOrderDialog] = useState<boolean>(false);
   const [orderDetails, setOrderDetails] = useState<any | null>(null);
+
+  const initialLoad = useRef(true);
+
+  useEffect(() => {
+    if (initialLoad.current) {
+      const savedState = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (savedState) {
+        const parsedState = JSON.parse(savedState);
+        setProducts(parsedState.products || []);
+        setBarcode(parsedState.barcode || "");
+        setTotalPrice(parsedState.totalPrice || 0);
+        setConfirmationMessage(parsedState.confirmationMessage || "");
+        setErrorMessage(parsedState.errorMessage || "");
+        setLoadingAdd(parsedState.loadingAdd || false);
+        setLoadingPay(parsedState.loadingPay || false);
+        setShowConfirmDialog(parsedState.showConfirmDialog || false);
+        setShowOrderDialog(parsedState.showOrderDialog || false);
+        setOrderDetails(parsedState.orderDetails || null);
+      } else {
+
+      }
+      initialLoad.current = false;
+    }
+  }, []);
+
+  // Save state to localStorage whenever it changes
+  useEffect(() => {
+    if (!initialLoad.current) {
+      const stateToSave = {
+        products,
+        barcode,
+        totalPrice,
+        confirmationMessage,
+        errorMessage,
+        loadingAdd,
+        loadingPay,
+        showConfirmDialog,
+        showOrderDialog,
+        orderDetails,
+      };
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stateToSave));
+    }
+  }, [
+    products,
+    barcode,
+    totalPrice,
+    confirmationMessage,
+    errorMessage,
+    loadingAdd,
+    loadingPay,
+    showConfirmDialog,
+    showOrderDialog,
+    orderDetails,
+  ]);
 
   useEffect(() => {
     setTotalPrice(calculateTotalPrice(products));
