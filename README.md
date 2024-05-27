@@ -22,11 +22,11 @@ author: "bllfoad"
 [Visit Vercel](https://vercel.com/)
 
 ---
-### hpw to run this
+### how to run this
 
-create .env.local 
-npm install
-npm run dev
+- create .env.local 
+- npm install
+- npm run dev
 
 ### Technologies Used
 
